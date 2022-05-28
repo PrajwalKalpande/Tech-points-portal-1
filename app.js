@@ -8,10 +8,13 @@ var logger = require('morgan');
 var app = express();
 var uid = require('uid-safe');
 require('dotenv').config();
+app.disable('etag');
 
-const SECRET_KEY=process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SECRET_KEY;
+
 var auth  = require('./routes/auth').router;
 var cors = require('cors');
+const { type } = require('os');
 
 // view engine setup
 app.use(cors());
@@ -23,16 +26,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(cookieParser()); not needed since session() includes it 
+
+
+app.use(cookieParser()); //not needed since session() includes it \
+
+/*app.use(session({
+    secret: [SECRET_KEY]
+   
+}));
+
 app.set('trust proxy', 1) // trust first proxy
-app.use(session({secret:[SECRET_KEY], //can add multiple keys later; first one is checked
-  resave:false,saveUninitialized:false,
-  genid: function(req) {
-    return uid(18) // use UUIDs for session IDs
-  }
-  // ,cookie: { secure: true }
-  ,cookie:{httpOnly:true}
-  //enable if HTTPS connection
+*/
+
+
+app.use(session({
+    name: "session-id",
+  secret: [SECRET_KEY], //can add multiple keys later; first one is checked
+    resave: true,
+    saveUninitialized: true,
+    genid:   function (req) {
+       return  uid.sync(18)   
+    }
+    , cookie: { httpOnly: true }
 }));
 
 app.use('/auth', auth);
