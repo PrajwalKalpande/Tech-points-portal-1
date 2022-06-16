@@ -3,7 +3,7 @@ const axios = require('axios').default;
 require('dotenv').config();
  
 //Function to retrieve user info
-const getProfileInfo = async (access_token) => {
+const get_profile_info = async (access_token) => {
     try {
         const { data: response } = await axios({
             method: 'GET',
@@ -19,4 +19,4 @@ const getProfileInfo = async (access_token) => {
        console.log(error)
     }
 }
-module.exports = {getProfileInfo};
+module.exports = { get_profile_info};

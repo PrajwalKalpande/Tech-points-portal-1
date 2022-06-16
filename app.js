@@ -10,8 +10,8 @@ var uid = require('uid-safe');
 require('dotenv').config();
 app.disable('etag');
 
-const SECRET_KEY = process.env.SECRET_KEY;
 
+const SECRET_KEY = process.env.SECRET_KEY;
 var auth  = require('./routes/auth').router;
 var cors = require('cors');
 const { type } = require('os');
@@ -26,9 +26,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 app.use(cookieParser()); //not needed since session() includes it \
+
+
+app.all("/dashboard", (req, res, next) => {
+    res.send('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <p> Hi , this is ur test dashboard ')
+})
+
+
 
 /*app.use(session({
     secret: [SECRET_KEY]
@@ -36,7 +41,7 @@ app.use(cookieParser()); //not needed since session() includes it \
 }));
 
 app.set('trust proxy', 1) // trust first proxy
-*/
+
 
 
 app.use(session({
@@ -49,8 +54,9 @@ app.use(session({
     }
     , cookie: { httpOnly: true }
 }));
+*/
 
-app.use('/auth', auth);
+app.use('/', auth);
  
 
 // catch 404 and forward to error handler
@@ -68,5 +74,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
- 
+
+
 module.exports = app;
